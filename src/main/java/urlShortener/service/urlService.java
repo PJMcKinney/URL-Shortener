@@ -4,11 +4,15 @@ import com.google.common.hash.Hashing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import urlShortener.dto.urlModelDTO;
+import urlShortener.exceptions.IdNotFoundException;
+import urlShortener.exceptions.UrlAlreadyExistsException;
 import urlShortener.mapper.urlMapper;
 import urlShortener.model.urlModel;
 import urlShortener.repository.urlRepository;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,5 +35,21 @@ public class urlService implements IurlService{
     public String getLongURL(String shortURL) {
         return repository.findLongURL(shortURL);
         }
+
+    public List<urlModel> returnAllEntries() {
+        return repository.findAll();
+    }
+
+    public urlModelDTO updateURL(UUID id, urlModelDTO urlModelDTO) throws IdNotFoundException {
+        if (!repository.existsById(id)) {
+            throw new IdNotFoundException ("Cannot update entry - Invalid ID");
+        }
+
+        urlModel urlModel = urlMapper.toUrlModel(urlModelDTO);
+        urlModel.setId(id);
+
+        return urlMapper.toUrlModelDTO(repository.save(urlModel));
+    }
+
 }
 

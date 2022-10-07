@@ -13,6 +13,7 @@ import urlShortener.model.urlModel;
 import urlShortener.service.urlService;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/url")
@@ -56,6 +57,42 @@ public class urlController {
                     ResponseDTO.builder()
                             .status(String.valueOf(HttpStatus.SEE_OTHER))
                             .response("Redirecting...").build(), httpHeaders, HttpStatus.SEE_OTHER);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                            .response(e.getMessage()).build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @GetMapping("/allEntries")
+    public ResponseEntity<ResponseDTO> returnAllEntries() {
+        try {
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.FOUND))
+                            .response(urlService.returnAllEntries()).build(), HttpStatus.FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                            .response(e.getMessage()).build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @PutMapping("/updateURL/{id}")
+    public ResponseEntity<ResponseDTO> updateEntry(@PathVariable("id") UUID id, @RequestBody urlModelDTO urlModelDTO) {
+        try {
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.OK))
+                            .response(urlService.updateURL(id, urlModelDTO)).build(), HttpStatus.OK);
 
         } catch (Exception e) {
             return new ResponseEntity<>(

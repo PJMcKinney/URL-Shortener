@@ -104,4 +104,43 @@ public class urlController {
         }
     }
 
+    @DeleteMapping("/deleteURL/{id}")
+    public ResponseEntity<ResponseDTO> updateEntry(@PathVariable("id") UUID id) {
+        try {
+            urlModelDTO urlModelDTO =urlService.getEntryById(id);
+            urlService.deleteEntry(id);
+
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.OK))
+                            .response("Deleted entry with ID: " + urlModelDTO.getId()).build(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                            .response(e.getMessage()).build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @GetMapping("/returnEntryById/{id}")
+    public ResponseEntity<ResponseDTO> returnEntryById(@PathVariable("id") UUID id) {
+        try {
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.FOUND))
+                            .response(urlService.getEntryById(id)).build(), HttpStatus.FOUND);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    ResponseDTO.builder()
+                            .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                            .response(e.getMessage()).build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
 }

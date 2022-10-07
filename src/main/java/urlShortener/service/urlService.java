@@ -10,6 +10,7 @@ import urlShortener.mapper.urlMapper;
 import urlShortener.model.urlModel;
 import urlShortener.repository.urlRepository;
 
+import javax.persistence.Id;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -51,5 +52,16 @@ public class urlService implements IurlService{
         return urlMapper.toUrlModelDTO(repository.save(urlModel));
     }
 
+    public void deleteEntry(UUID id) throws IdNotFoundException {
+        if (!repository.existsById(id)) {
+            throw new IdNotFoundException("Cannot delete entry - Invalid ID");
+        }
+        repository.deleteById(id);
+    }
+
+    public urlModelDTO getEntryById(UUID id) throws IdNotFoundException {
+        urlModel urlModel = repository.findById(id).orElseThrow(() -> new IdNotFoundException("Invalid ID"));
+        return urlMapper.toUrlModelDTO(urlModel);
+    }
 }
 

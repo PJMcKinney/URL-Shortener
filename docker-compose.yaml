@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  url-shortener-api:
+    image: pjmck/url-shortener:0.4
+    restart: always
+    build: ../urlShortener
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+  url-shortener-frontend:
+    image: pjmck/url-shortener-app:0.1
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - url-shortener-api
+      - mysql

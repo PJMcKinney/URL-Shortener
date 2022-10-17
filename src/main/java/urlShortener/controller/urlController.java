@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000/")
 @RequestMapping(path = "/url")
 public class urlController {
 
@@ -29,7 +30,7 @@ public class urlController {
             urlService.saveShortURL(urlModelDTO);
 
             MultiValueMap<String, String> headers = new HttpHeaders();
-            headers.add("id", urlModelDTO.getLongURL());
+            headers.add("shortURL", urlModelDTO.getShortURL());
 
             return new ResponseEntity<>(
                     ResponseDTO.builder()
@@ -73,8 +74,8 @@ public class urlController {
         try {
             return new ResponseEntity<>(
                     ResponseDTO.builder()
-                            .status(String.valueOf(HttpStatus.FOUND))
-                            .response(urlService.returnAllEntries()).build(), HttpStatus.FOUND);
+                            .status(String.valueOf(HttpStatus.OK))
+                            .response(urlService.returnAllEntries()).build(), HttpStatus.OK);
 
         } catch (Exception e) {
             return new ResponseEntity<>(
@@ -142,5 +143,4 @@ public class urlController {
             );
         }
     }
-
 }

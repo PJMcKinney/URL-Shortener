@@ -1,5 +1,6 @@
 package urlShortener.service;
 
+import org.springframework.data.repository.query.Param;
 import urlShortener.dto.urlModelDTO;
 import urlShortener.exceptions.IdNotFoundException;
 import urlShortener.model.urlModel;
@@ -12,6 +13,8 @@ public interface IurlService {
     void saveShortURL(urlModelDTO urlModelDTO);
 
     String getLongURL(String shortURL);
+
+    String findShortURL(String longURL);
 
     List<urlModel> returnAllEntries();
 

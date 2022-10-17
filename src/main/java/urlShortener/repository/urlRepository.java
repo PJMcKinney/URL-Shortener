@@ -16,4 +16,7 @@ public interface urlRepository extends JpaRepository<urlModel, UUID> {
     @Query(value = "SELECT longURL from URLs where shortURL = :shortURL", nativeQuery = true)
     String findLongURL(@Param("shortURL") String shortURL);
 
+    @Query(value = "SELECT shortURL from URLs where longURL = :longURL", nativeQuery = true)
+    String findShortURL(@Param("longURL") String longURL);
+
 }

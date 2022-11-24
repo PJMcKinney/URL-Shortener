@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.w3c.dom.Text;
 
 import javax.persistence.*;
 import java.net.URL;
@@ -26,7 +27,7 @@ public class urlModel {
     @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID id;
 
-    @Column(name = "longURL", updatable = true, nullable = false)
+    @Column(name = "longURL", updatable = true, nullable = false, length = 65535, columnDefinition = "Text")
     private String longURL;
 
     @Column(name = "shortURL")

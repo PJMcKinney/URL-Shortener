@@ -2,7 +2,7 @@ version: '3'
 
 services:
   url-shortener-api:
-    image: pjmck/url-shortener:0.4
+    image: pjmck/url-shortener:0.5
     restart: always
     build: ../urlShortener
     ports:
@@ -20,10 +20,10 @@ services:
       - "3306:3306"
 
   url-shortener-frontend:
-    image: pjmck/url-shortener-app:0.1
+    image: pjmck/url-shortener-app:0.5
     restart: always
     ports:
-      - "3000:3000"
+      - "80:80"
     depends_on:
       - url-shortener-api
       - mysql

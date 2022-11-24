@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin()
 @RequestMapping(path = "/url")
 public class urlController {
 
@@ -27,7 +27,9 @@ public class urlController {
     public ResponseEntity<ResponseDTO> saveURLRelationship(@RequestBody urlModelDTO urlModelDTO ) {
         try {
 
-            urlService.saveShortURL(urlModelDTO);
+            UUID id = urlService.saveShortURL(urlModelDTO);
+
+            urlModelDTO returnedUrlModelDTO = urlService.getEntryById(id);
 
             MultiValueMap<String, String> headers = new HttpHeaders();
             headers.add("shortURL", urlModelDTO.getShortURL());
@@ -35,7 +37,7 @@ public class urlController {
             return new ResponseEntity<>(
                     ResponseDTO.builder()
                             .status(String.valueOf(HttpStatus.CREATED))
-                            .response(urlModelDTO).build(), headers, HttpStatus.CREATED);
+                            .response(returnedUrlModelDTO).build(), headers, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(
                     ResponseDTO.builder()
@@ -106,7 +108,7 @@ public class urlController {
     }
 
     @DeleteMapping("/deleteURL/{id}")
-    public ResponseEntity<ResponseDTO> updateEntry(@PathVariable("id") UUID id) {
+    public ResponseEntity<ResponseDTO> deleteEntry(@PathVariable("id") UUID id) {
         try {
             urlModelDTO urlModelDTO =urlService.getEntryById(id);
             urlService.deleteEntry(id);

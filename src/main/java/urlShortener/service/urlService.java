@@ -1,6 +1,7 @@
 package urlShortener.service;
 
 import com.google.common.hash.Hashing;
+import cucumber.runtime.Runtime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import urlShortener.dto.urlModelDTO;
@@ -20,7 +21,7 @@ public class urlService implements IurlService{
     @Autowired
     urlRepository repository;
 
-    public void saveShortURL(urlModelDTO urlModelDTO) {
+    public UUID saveShortURL(urlModelDTO urlModelDTO) {
 
         urlModel urlModel = urlMapper.toUrlModel(urlModelDTO);
 
@@ -32,8 +33,9 @@ public class urlService implements IurlService{
 
         if(isNull(findShortURL(urlModelDTO.getLongURL()))) {
             urlModel.setShortURL(hashValue);
-            repository.save(urlModel);
+            return repository.save(urlModel).getId();
         }
+        throw new RuntimeException("Long URL already exists in database");
     }
 
     public String getLongURL(String shortURL) {
@@ -53,6 +55,9 @@ public class urlService implements IurlService{
         if (!repository.existsById(id)) {
             throw new IdNotFoundException ("Cannot update entry - Invalid ID");
         }
+
+        if(!isNull(repository.findShortURL(urlModelDTO.getShortURL())))
+            throw new RuntimeException("Custom Short URL not unique");
 
         urlModel urlModel = urlMapper.toUrlModel(urlModelDTO);
         urlModel.setId(id);
